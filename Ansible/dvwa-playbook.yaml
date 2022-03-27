@@ -1,0 +1,31 @@
+---
+        - name: Docker and DVWA playbook
+          hosts: webservers
+          become: true
+          tasks:
+                  - name: Install Docker
+                    apt:
+                        name: docker.io
+                        update_cache: yes
+                        state: present
+
+                  - name: Install Python
+                    apt:
+                        name: python3-pip
+                        state: present
+                  - name: Install python docker
+                    pip:
+                        name: docker
+                        state: present
+                  - name: Install DVWA container
+                    docker_container:
+                        name: IhateYAML
+                        image: cyberxsecurity/dvwa
+                        published_ports: 80:80
+                        state: started
+                        restart_policy: always
+
+                  - name: Make sure Docker service is running
+                    systemd:
+                        name: docker
+                        enabled: yes
